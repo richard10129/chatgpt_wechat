@@ -50,6 +50,7 @@ class ChatChannel(Channel):
             cmsg = context["msg"]
             user_data = conf().get_user_data(cmsg.from_user_id)
             context["openai_api_key"] = user_data.get("openai_api_key")
+            context["gpt_model"] = user_data.get("gpt_model")
             if context.get("isgroup", False):
                 group_name = cmsg.other_user_nickname
                 group_id = cmsg.other_user_id
@@ -219,7 +220,7 @@ class ChatChannel(Channel):
                         reply = super().build_text_to_voice(reply.content)
                         return self._decorate_reply(context, reply)
                     if context.get("isgroup", False):
-                        reply_text = "@" + context["msg"].actual_user_nickname + " " + reply_text.strip()
+                        reply_text = "@" + context["msg"].actual_user_nickname + "\n" + reply_text.strip()
                         reply_text = conf().get("group_chat_reply_prefix", "") + reply_text
                     else:
                         reply_text = conf().get("single_chat_reply_prefix", "") + reply_text
